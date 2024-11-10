@@ -1,0 +1,23 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Thiiagoms\\Calisthenics\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Thiiagoms\\Calisthenics\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "ext-ds": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.4",
+        "laravel/pint": "^1.18"
+    },
+    "scripts": {
+        "pint": "pint",
+        "tests": "phpunit --testdox tests"
+    }
+}
