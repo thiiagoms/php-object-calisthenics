@@ -17,8 +17,6 @@ class InMemoryVideoRepository implements VideoRepository
 
     public function videosFor(Student $student): array
     {
-        $today = new \DateTimeImmutable;
-
-        return array_filter($this->videos, fn (Video $video) => $video->getAgeLimit() <= $student->getBd()->diff($today)->y);
+        return array_filter($this->videos, fn (Video $video): bool => $video->getAgeLimit() <= $student->age());
     }
 }

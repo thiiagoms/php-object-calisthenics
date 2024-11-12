@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Thiiagoms\Calisthenics\Tests\Unit\Domain\Student;
 
 use PHPUnit\Framework\TestCase;
+use Thiiagoms\Calisthenics\Domain\Address\Address;
+use Thiiagoms\Calisthenics\Domain\Email\Email;
+use Thiiagoms\Calisthenics\Domain\FullName\FullName;
 use Thiiagoms\Calisthenics\Domain\Student\Student;
 use Thiiagoms\Calisthenics\Domain\Video\Video;
 
@@ -15,16 +18,17 @@ class StudentTest extends TestCase
     protected function setUp(): void
     {
         $this->student = new Student(
-            'thiiagoms@proton.me',
+            new Email('thiiagoms@proton.me'),
             new \DateTimeImmutable('1996-04-03'),
-            'Thiago',
-            'Silva',
-            'Rua de Exemplo',
-            '71B',
-            'Meu Bairro',
-            'Minha Cidade',
-            'Meu estado',
-            'Brazil'
+            new FullName('Thiago', 'Silva'),
+            new Address(
+                'Rua de Exemplo',
+                '71B',
+                'Meu Bairro',
+                'Minha Cidade',
+                'Meu estado',
+                'Brazil'
+            )
         );
     }
 

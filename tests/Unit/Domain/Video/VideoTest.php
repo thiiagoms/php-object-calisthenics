@@ -7,11 +7,11 @@ use Thiiagoms\Calisthenics\Domain\Video\Video;
 
 class VideoTest extends TestCase
 {
-    public function testChangeVisibilityMustWork(): void
+    public function testMakingAVideoPublicMustWork(): void
     {
         $video = new Video;
-        $video->checkIfVisibilityIsValidAndUpdateIt(Video::PUBLIC);
+        $video->publish();
 
-        $this->assertSame(Video::PUBLIC, $video->getVisibility());
+        $this->assertTrue($video->isPublic());
     }
 }

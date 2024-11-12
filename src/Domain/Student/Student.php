@@ -1,82 +1,70 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Thiiagoms\Calisthenics\Domain\Student;
 
 use DateTimeInterface;
-use Ds\Map;
+use Thiiagoms\Calisthenics\Domain\Address\Address;
+use Thiiagoms\Calisthenics\Domain\Email\Email;
+use Thiiagoms\Calisthenics\Domain\FullName\FullName;
 use Thiiagoms\Calisthenics\Domain\Video\Video;
 
 class Student
 {
-    private Map $watchedVideos;
+    private WatchedVideos $watchedVideos;
 
     public function __construct(
-        private string $email,
-        private DateTimeInterface $bd,
-        private string $firstName,
-        private string $lastName,
-        private string $street,
-        private string $number,
-        private string $province,
-        private string $city,
-        private string $state,
-        private string $country
+        private Email $email,
+        private DateTimeInterface $birthDate,
+        private FullName $fullName,
+        private Address $address
     ) {
-        $this->watchedVideos = new Map;
-        $this->setEmail($email);
+        $this->watchedVideos = new WatchedVideos;
     }
 
-    public function getFullName(): string
+    public function fullName(): string
     {
-        return "{$this->firstName} {$this->lastName}";
+        return (string) $this->fullName;
     }
 
-    private function setEmail(string $email): void
+    public function email(): string
     {
-        if (filter_var($email, FILTER_VALIDATE_EMAIL) !== false) {
-            $this->email = $email;
-
-            return;
-        }
-
-        throw new \InvalidArgumentException('Invalid e-mail address');
+        return (string) $this->email;
     }
 
-    public function getEmail(): string
+    public function address(): array
     {
-        return $this->email;
+        return $this->address->toArray();
     }
 
-    public function getBd(): DateTimeInterface
+    public function birthDate(): DateTimeInterface
     {
-        return $this->bd;
+        return $this->birthDate;
     }
 
     public function watch(Video $video, DateTimeInterface $date): void
     {
-        $this->watchedVideos->put($video, $date);
+        $this->watchedVideos->add($video, $date);
     }
 
     public function hasAccess(): bool
     {
-        if ($this->watchedVideos->count() > 0) {
-
-            $this->watchedVideos->sort(fn (DateTimeInterface $dateA, DateTimeInterface $dateB) => $dateA <=> $dateB);
-
-            /** @var DateTimeInterface $firstDate */
-            $firstDate = $this->watchedVideos->first()->value;
-
-            $today = new \DateTimeImmutable;
-
-            if ($firstDate->diff($today)->days >= 90) {
-                return false;
-            }
-
+        if ($this->watchedVideos->count() === 0) {
             return true;
         }
 
-        return true;
+        $firstDate = $this->watchedVideos->dateOfFirstVideo();
+
+        $today = new \DateTimeImmutable;
+
+        return $firstDate->diff($today)->days < 90;
+    }
+
+    public function age(): int
+    {
+        $today = new \DateTimeImmutable;
+
+        $dateInterval = $this->birthDate()->diff($today);
+
+        return $dateInterval->y;
     }
 }
